@@ -1,109 +1,71 @@
-import { useState } from "react";
-import * as XLSX from "xlsx";
+"use client";
 
-type ExcelRow = Record<string, any>;
+import * as XLSX from "xlsx";
+import { useState } from "react";
+import { useEventsContext } from "@/app/context/eventsContext";
 
 export default function UploadExcel() {
+  const { salvarFirebase, loading } = useEventsContext();
+
   const [file, setFile] = useState<File | null>(null);
-  const [rows, setRows] = useState<ExcelRow[]>([]);
-  const [columns, setColumns] = useState<string[]>([]);
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
+  const [mensagem, setMensagem] = useState("");
 
-  const [mapping, setMapping] = useState({
-    name: "",
-    theme: "",
-    type: "",
-    date: ""
-  });
-
-  // 1️⃣ Upload do arquivo
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.length) {
-      setFile(e.target.files[0]);
-    }
-  };
-
-  // 2️⃣ Leitura do Excel
-  const handleUpload = () => {
+  const processarArquivo = async () => {
     if (!file) return;
 
-    const reader = new FileReader();
-
-    reader.onload = (evt) => {
-      const data = evt.target?.result;
-      const workbook = XLSX.read(data, { type: "binary" });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-
-      const jsonData: ExcelRow[] = XLSX.utils.sheet_to_json(sheet);
-
-      if (jsonData.length === 0) return;
-
-      setRows(jsonData);
-      setColumns(Object.keys(jsonData[0]));
-    };
-
-    reader.readAsBinaryString(file);
-  };
-
-  // 3️⃣ Gerar dados já mapeados
-  const handleGenerate = () => {
-    const { name, theme, type, date } = mapping;
-
-    if (!name || !theme || !type || !date) {
-      alert("Mapeie todas as colunas antes de continuar");
+    if (!file.name.endsWith(".xlsx") && !file.name.endsWith(".xls")) {
+      setStatus("error");
+      setMensagem("Arquivo não suportado. Envie um Excel.");
       return;
     }
 
-    const formatted = rows.map((row) => ({
-      name: row[name],
-      theme: row[theme],
-      type: row[type],
-      date: row[date]
-    }));
+    try {
+      setStatus("loading");
+      setMensagem("Processando e enviando dados para o banco...");
 
-    console.log("DADOS PRONTOS PARA GRÁFICO:", formatted);
-    // 👉 aqui você envia para o componente de gráfico
+      const buffer = await file.arrayBuffer();
+      const workbook = XLSX.read(buffer);
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const json = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+
+      await salvarFirebase(json);
+
+      setStatus("success");
+      setMensagem("Arquivo salvo com sucesso!");
+    } catch {
+      setStatus("error");
+      setMensagem("Erro ao salvar os dados no banco.");
+    }
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Upload de Excel</h2>
+    <div>
+      <input
+        type="file"
+        accept=".xlsx,.xls"
+        onChange={e => setFile(e.target.files?.[0] || null)}
+      />
 
-      <input type="file" accept=".xlsx,.xls" onChange={handleFileChange} />
-      <br /><br />
+      <button
+        onClick={processarArquivo}
+        disabled={loading}
+        style={{ marginTop: 8 }}
+      >
+        Processar arquivo
+      </button>
 
-      <button onClick={handleUpload}>Enviar arquivo</button>
-
-      {columns.length > 0 && (
-        <>
-          <h3>Mapeamento de colunas</h3>
-
-          {[
-            { key: "name", label: "Nome do evento" },
-            { key: "theme", label: "Tema" },
-            { key: "type", label: "Tipo" },
-            { key: "date", label: "Data" }
-          ].map(({ key, label }) => (
-            <div key={key} style={{ marginBottom: 10 }}>
-              <label>{label}: </label>
-              <select
-                value={(mapping as any)[key]}
-                onChange={(e) =>
-                  setMapping({ ...mapping, [key]: e.target.value })
-                }
-              >
-                <option value="">Selecione</option>
-                {columns.map((col) => (
-                  <option key={col} value={col}>
-                    {col}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ))}
-
-          <button onClick={handleGenerate}>Gerar gráfico</button>
-        </>
+      {status !== "idle" && (
+        <p
+          style={{
+            marginTop: 8,
+            color: status === "error" ? "red" : "green",
+          }}
+        >
+          {mensagem}
+        </p>
       )}
     </div>
   );

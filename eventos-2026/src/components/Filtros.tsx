@@ -1,12 +1,18 @@
-export default function Filtros({ setFiltro }: any) {
+"use client";
+
+import { useEventsContext } from "@/app/context/eventsContext";
+
+export default function Filtros() {
+  const { colunas, setColunaSelecionada } = useEventsContext();
+
   return (
-    <div className="card">
-      <select onChange={e => setFiltro(e.target.value)}>
-        <option value="">Todos</option>
-        <option value="Ativo">Ativo</option>
-        <option value="Finalizado">Finalizado</option>
-        <option value="Cancelado">Cancelado</option>
-      </select>
-    </div>
+    <select onChange={e => setColunaSelecionada(e.target.value)}>
+      <option value="">Selecionar coluna</option>
+      {colunas.map((col: string) => (
+        <option key={col} value={col}>
+          {col}
+        </option>
+      ))}
+    </select>
   );
 }

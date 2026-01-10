@@ -1,36 +1,43 @@
 "use client";
 
-import { Chart as ChartJS, ArcElement, BarElement, CategoryScale, LinearScale } from "chart.js";
-import { Pie, Bar } from "react-chartjs-2";
-import { Tooltip, Legend } from "chart.js";
+import "@/app/lib/chart"; // 🔥 registra o Chart.js
+import { Bar } from "react-chartjs-2";
+import { useEvents } from "@/app/hooks/useEvents";
 
-ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+export default function Graficos() {
+  const { eventos, colunas } = useEvents();
 
-export default function Graficos({ eventos }: any) {
+  if (!eventos.length || !colunas.length) {
+    return <p>Sem dados para exibir gráficos</p>;
+  }
 
-  const categorias = [...new Set(eventos.map((e:any) => e.categoria))];
+  // escolhe automaticamente a primeira coluna categórica
+  const eixoX = colunas[0];
+
+  // agrupa dados
+  const agrupado: Record<string, number> = {};
+
+  eventos.forEach(item => {
+    const valor = item[eixoX];
+    if (!valor) return;
+
+    agrupado[valor] = (agrupado[valor] || 0) + 1;
+  });
+
+  const data = {
+    labels: Object.keys(agrupado),
+    datasets: [
+      {
+        label: `Distribuição por ${eixoX}`,
+        data: Object.values(agrupado),
+        backgroundColor: "#4f46e5",
+      },
+    ],
+  };
 
   return (
-    <div className="card">
-      <h2>Gráficos</h2>
-
-      <Pie data={{
-        labels: categorias,
-        datasets: [{
-          data: categorias.map(c =>
-            eventos.filter((e:any) => e.categoria === c).length
-          )
-        }]
-      }} />
-
-      <Bar data={{
-        labels: ["Ativo", "Finalizado", "Cancelado"],
-        datasets: [{
-          data: ["Ativo", "Finalizado", "Cancelado"].map(s =>
-            eventos.filter((e:any) => e.status === s).length
-          )
-        }]
-      }} />
+    <div style={{ width: "100%", maxWidth: 600 }}>
+      <Bar data={data} />
     </div>
   );
 }

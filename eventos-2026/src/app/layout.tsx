@@ -1,19 +1,14 @@
 import "./globals.css";
 
-export const metadata = {
-  title: "Eventos 2026",
-  description: "Dashboard de eventos",
-};
+import { EventsProvider } from "@/app/context/eventsContext";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR">
-      <body suppressHydrationWarning>
-        {children}
+    <html lang="pt-br">
+      <body>
+        <EventsProvider>
+          {children}
+        </EventsProvider>
       </body>
     </html>
   );
