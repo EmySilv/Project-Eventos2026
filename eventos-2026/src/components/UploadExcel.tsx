@@ -35,9 +35,11 @@ export default function UploadExcel() {
 
       setStatus("success");
       setMensagem("Arquivo salvo com sucesso!");
-    } catch {
-      setStatus("error");
-      setMensagem("Erro ao salvar os dados no banco.");
+    } catch (error) {
+      console.error(error);
+      const mensagemErro =
+        error instanceof Error ? error.message : "Erro desconhecido";
+      setMensagem(`Erro: ${mensagemErro}`);
     }
   };
 
@@ -46,7 +48,7 @@ export default function UploadExcel() {
       <input
         type="file"
         accept=".xlsx,.xls"
-        onChange={e => setFile(e.target.files?.[0] || null)}
+        onChange={(e) => setFile(e.target.files?.[0] || null)}
       />
 
       <button
