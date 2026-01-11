@@ -4,7 +4,6 @@ import { useEventsContext } from "@/app/context/eventsContext";
 import { Key } from "react";
 
 const ORDEM_COLUNAS = [
-  "Cód",
   "Nome",
   "Tema",
   "Tipo",
