@@ -180,7 +180,7 @@ export default function Filtros() {
             onClick={selecionarTodos}
             style={{
               padding: "10px 20px",
-              background: "#10b981",
+              background: "#28b183",
               color: "#fff",
               border: "none",
               borderRadius: "8px",
