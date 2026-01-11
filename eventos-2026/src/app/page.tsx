@@ -12,7 +12,6 @@ export default function LandingPage() {
 
   return (
     <div className="container">
-      {/* Hero Section */}
       <div className="hero-section">
         <div className="logo-container">
           <img src="/img/vivoGradiente.png" alt="Logo Vivo" className="logo" />
@@ -26,7 +25,6 @@ export default function LandingPage() {
         </button>
       </div>
 
-      {/* Features Section */}
       <div className="features-grid">
         <div className="feature-card">
           <div className="feature-icon">📊</div>
@@ -72,46 +70,44 @@ export default function LandingPage() {
             atualização automática
           </p>
         </div>
+      </div>
 
-        <div className="stats-section">
-          <div className="stats-grid">
-            <div className="stat-item">
-              <div className="stat-number">100%</div>
-              <div className="stat-label">Gratuito</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-number">∞</div>
-              <div className="stat-label">Eventos Ilimitados</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-number">5+</div>
-              <div className="stat-label">Tipos de Gráficos</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-number">24/7</div>
-              <div className="stat-label">Acesso Total</div>
-            </div>
+      <div className="stats-section">
+        <div className="stats-grid">
+          <div className="stat-item">
+            <div className="stat-number">100%</div>
+            <div className="stat-label">Gratuito</div>
+          </div>
+          <div className="stat-item">
+            <div className="stat-number">∞</div>
+            <div className="stat-label">Eventos Ilimitados</div>
+          </div>
+          <div className="stat-item">
+            <div className="stat-number">5+</div>
+            <div className="stat-label">Tipos de Gráficos</div>
+          </div>
+          <div className="stat-item">
+            <div className="stat-number">24/7</div>
+            <div className="stat-label">Acesso Total</div>
           </div>
         </div>
+      </div>
 
-        {/* CTA Section */}
-        <div className="cta-section">
-          <h2 className="cta-section-title">Pronto para começar?</h2>
-          <p className="cta-section-description">
-            Comece a gerenciar seus eventos de forma profissional e eficiente
-          </p>
-          <button className="cta-button" onClick={handleNavigateToDashboard}>
-            ✨ Começar Agora
-          </button>
-        </div>
+      <div className="cta-section">
+        <h2 className="cta-section-title">Pronto para começar?</h2>
+        <p className="cta-section-description">
+          Comece a gerenciar seus eventos de forma profissional e eficiente
+        </p>
+        <button className="cta-button" onClick={handleNavigateToDashboard}>
+          ✨ Começar Agora
+        </button>
+      </div>
 
-        {/* Footer */}
-        <div className="footer">
-          <p>
-            © 2026 Eventos 2026 • Desenvolvido com 💜 para gestão profissional
-            de eventos
-          </p>
-        </div>
+      <div className="footer">
+        <p>
+          © 2026 Eventos 2026 • Desenvolvido com 💜 para gestão profissional
+          de eventos
+        </p>
       </div>
     </div>
   );
