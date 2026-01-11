@@ -1,4 +1,4 @@
-import "./globals.css";
+import "@/app/css/page.css";
 
 import { EventsProvider } from "@/app/context/eventsContext";
 
