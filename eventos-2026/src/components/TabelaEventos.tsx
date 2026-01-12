@@ -28,7 +28,7 @@ export default function TabelaEventos() {
   if (!eventos?.length) {
     return (
       <div style={{ textAlign: "center", padding: "40px", color: "#999" }}>
-        <p style={{ fontSize: "16px" }}>📋 Nenhum evento para exibir</p>
+        <p style={{ fontSize: "16px" }}>Nenhum evento para exibir</p>
         <p style={{ fontSize: "14px", marginTop: "8px" }}>
           Faça upload de uma planilha ou ajuste os filtros
         </p>
@@ -165,7 +165,7 @@ export default function TabelaEventos() {
           fontWeight: "500",
         }}
       >
-        📊 Total: <strong style={{ color: "#4f46e5" }}>{eventos.length}</strong> evento(s) exibido(s)
+        Total: <strong style={{ color: "#4f46e5" }}>{eventos.length}</strong> evento(s) exibido(s)
       </div>
     </div>
   );

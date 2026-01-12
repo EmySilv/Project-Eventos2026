@@ -55,7 +55,6 @@ export default function Filtros() {
       {/* Seção 1: Filtro por Coluna */}
       <div>
         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
-          <span style={{ fontSize: "20px" }}>🎯</span>
           <h3 style={{ margin: 0, fontSize: "16px", fontWeight: "600" }}>
             Filtrar por Categoria
           </h3>
@@ -109,7 +108,7 @@ export default function Filtros() {
                   background: "#fff",
                 }}
               >
-                <option value="">📊 Todos os itens (visão agregada)</option>
+                <option value="">Todos os itens (visão agregada)</option>
                 {valoresUnicos.map(valor => (
                   <option key={valor} value={valor}>
                     {valor}
@@ -120,38 +119,7 @@ export default function Filtros() {
           )}
         </div>
       </div>
-
-      {/* Divisor */}
-      <div style={{ borderTop: "1px solid #e5e7eb" }} />
-
-      {/* Seção 2: Busca Global */}
-      <div>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
-          <span style={{ fontSize: "20px" }}>🔍</span>
-          <h3 style={{ margin: 0, fontSize: "16px", fontWeight: "600" }}>
-            Busca Rápida
-          </h3>
-        </div>
-
-        <div>
-          <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", color: "#666" }}>
-            Pesquisar em todas as colunas:
-          </label>
-          <input
-            type="text"
-            placeholder="Digite qualquer termo para buscar..."
-            value={textoBusca}
-            onChange={e => setTextoBusca(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "10px 12px",
-              borderRadius: "8px",
-              border: "2px solid #e5e7eb",
-              fontSize: "14px",
-            }}
-          />
-        </div>
-      </div>
+      
 
       {/* Botões de Ação */}
       <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
@@ -192,7 +160,6 @@ export default function Filtros() {
               gap: "8px",
             }}
           >
-            <span>📊</span>
             Ver Todos os Itens Agregados
           </button>
         )}
@@ -201,7 +168,7 @@ export default function Filtros() {
           onClick={limparFiltros}
           style={{
             padding: "10px 20px",
-            background: "#ef4444",
+            background: "#bd2121",
             color: "#fff",
             border: "none",
             borderRadius: "8px",
@@ -229,14 +196,13 @@ export default function Filtros() {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
-            <span style={{ fontSize: "18px" }}>🎯</span>
             <strong style={{ fontSize: "15px" }}>Filtros Ativos:</strong>
           </div>
           
           <div style={{ paddingLeft: "30px" }}>
             {colunaSelecionada && (
               <div style={{ marginBottom: "5px" }}>
-                <strong>📋 Categoria:</strong> {colunaSelecionada}
+                <strong> Categoria:</strong> {colunaSelecionada}
                 {valorSelecionado ? (
                   <span style={{ marginLeft: "10px", background: "rgba(255,255,255,0.3)", padding: "2px 8px", borderRadius: "4px" }}>
                     = "{valorSelecionado}"
@@ -251,7 +217,7 @@ export default function Filtros() {
             
             {textoBusca && (
               <div>
-                <strong>🔍 Busca:</strong>{" "}
+                <strong> Busca:</strong>{" "}
                 <span style={{ background: "rgba(255,255,255,0.3)", padding: "2px 8px", borderRadius: "4px" }}>
                   "{textoBusca}"
                 </span>
@@ -260,21 +226,6 @@ export default function Filtros() {
           </div>
         </div>
       )}
-
-      {/* Info Box */}
-      <div
-        style={{
-          padding: "12px",
-          background: "#f0fdf4",
-          borderRadius: "8px",
-          fontSize: "13px",
-          color: "#166534",
-          border: "1px solid #bbf7d0",
-        }}
-      >
-        <strong>💡 Dica:</strong> Selecione "Todos os itens" para ver gráficos agregados por categoria, 
-        ou escolha um valor específico para análise detalhada.
-      </div>
     </div>
   );
 }

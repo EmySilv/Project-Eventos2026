@@ -85,18 +85,7 @@ export default function UploadExcel() {
       
       {/* Área de Upload Estilizada */}
       <div>
-        <label
-          style={{
-            display: "block",
-            marginBottom: "12px",
-            fontSize: "14px",
-            fontWeight: "600",
-            color: "#374151",
-          }}
-        >
-          📁 Selecione o arquivo Excel:
-        </label>
-        
+              
         {/* Input escondido */}
         <input
           ref={fileInputRef}
@@ -303,7 +292,7 @@ export default function UploadExcel() {
           }}
         >
           <span style={{ fontSize: "20px" }}>
-            {status === "error" ? "⚠️" : status === "success" ? "✅" : "ℹ️"}
+            {status === "error" ? "⚠️" : status === "success" ? "" : "ℹ️"}
           </span>
           {mensagem}
         </div>
