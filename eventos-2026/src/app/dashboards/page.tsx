@@ -95,7 +95,7 @@ export default function PageDash() {
       </section>
 
       <footer style={{ textAlign: "center", marginTop: "40px", color: "#999" }}>
-        <p>Desenvolvido para o projeto Eventos • 2026</p>
+        <p> © Desenvolvido por Emilly Silva •  2026 Eventos </p>
       </footer>
     </main>
   );
