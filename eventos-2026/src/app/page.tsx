@@ -101,10 +101,7 @@ export default function LandingPage() {
       </div>
 
       <div className="footer">
-        <p>
-          © 2026 Eventos 2026 • Desenvolvido com 💜 para gestão profissional de
-          eventos
-        </p>
+        <p>© Desenvolvido por Emilly Silva •  2026 Eventos</p>
       </div>
     </div>
   );
