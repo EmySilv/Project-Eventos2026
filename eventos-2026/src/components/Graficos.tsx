@@ -13,7 +13,7 @@ export default function Graficos() {
   const eventosFiltrados = eventos?.length || 0;
 
   // ============================================
-  // 🎯 FUNÇÃO HELPER: Agrupa dados por coluna
+  // FUNÇÃO HELPER: Agrupa dados por coluna
   // ============================================
   const agruparPorColuna = (coluna: string, dadosBase: any[] = []) => {
     const agrupado: Record<string, number> = {};
@@ -27,7 +27,7 @@ export default function Graficos() {
   };
 
   // ============================================
-  // 📊 GRÁFICOS GENÉRICOS - FUNCIONAM PARA QUALQUER FILTRO
+  // GRÁFICOS GENÉRICOS - FUNCIONAM PARA QUALQUER FILTRO
   // ============================================
   const graficosGenericos = useMemo(() => {
     if (!eventos?.length || !colunas?.length) return null;
@@ -97,7 +97,7 @@ export default function Graficos() {
   }, [eventos, colunas, colunaSelecionada]);
 
   // ============================================
-  // 📈 GRÁFICO DE TIMELINE (se houver coluna de data)
+  // GRÁFICO DE TIMELINE (se houver coluna de data)
   // ============================================
   const graficoTimeline = useMemo(() => {
     if (!eventos?.length || !colunas?.length) return null;
@@ -142,12 +142,12 @@ export default function Graficos() {
   }, [eventos, colunas]);
 
   // ============================================
-  // 🔍 VERIFICAÇÃO DE DADOS
+  // VERIFICAÇÃO DE DADOS
   // ============================================
   if (!eventosTodos?.length || !colunas?.length) {
     return (
       <div style={{ textAlign: "center", padding: "40px", color: "#999" }}>
-        <p style={{ fontSize: "18px" }}>📊 Sem dados para exibir gráficos</p>
+        <p style={{ fontSize: "18px" }}>Sem dados para exibir gráficos</p>
         <p style={{ fontSize: "14px", marginTop: "10px" }}>
           Faça upload de uma planilha para começar
         </p>
@@ -164,7 +164,7 @@ export default function Graficos() {
   }
 
   // ============================================
-  // 🎯 RENDERIZAÇÃO
+  // RENDERIZAÇÃO
   // ============================================
   return (
     <div>
@@ -203,7 +203,7 @@ export default function Graficos() {
         {/* Gráfico da coluna selecionada (se houver filtro) */}
         {graficosGenericos.colunaSelecionada && (
           <GraficoCard 
-            titulo={`📊 Distribuição: ${colunaSelecionada}`}
+            titulo={`Distribuição: ${colunaSelecionada}`}
             tipo="pizza"
           >
             <Pie data={graficosGenericos.colunaSelecionada} />
@@ -212,7 +212,7 @@ export default function Graficos() {
 
         {/* Gráfico 1: Análise Cruzada */}
         <GraficoCard 
-          titulo={`🏆 Top 10 - ${graficosGenericos.analise1.titulo}`}
+          titulo={`Top 10 - ${graficosGenericos.analise1.titulo}`}
           tipo="barras"
         >
           <Bar
@@ -223,7 +223,7 @@ export default function Graficos() {
 
         {/* Gráfico 2: Análise Cruzada */}
         <GraficoCard 
-          titulo={`🎨 Análise por ${graficosGenericos.analise2.titulo}`}
+          titulo={`Análise por ${graficosGenericos.analise2.titulo}`}
           tipo="rosca"
         >
           <Doughnut data={graficosGenericos.analise2} />
@@ -231,7 +231,7 @@ export default function Graficos() {
 
         {/* Gráfico 3: Análise Cruzada */}
         <GraficoCard 
-          titulo={`📈 Distribuição: ${graficosGenericos.analise3.titulo}`}
+          titulo={`Distribuição: ${graficosGenericos.analise3.titulo}`}
           tipo="barras"
         >
           <Bar data={graficosGenericos.analise3} />
@@ -240,7 +240,7 @@ export default function Graficos() {
         {/* Gráfico 4: Timeline (se existir) */}
         {graficoTimeline && (
           <GraficoCard 
-            titulo={`⏰ Timeline - ${graficoTimeline.titulo}`}
+            titulo={`Timeline - ${graficoTimeline.titulo}`}
             tipo="linha"
           >
             <Line data={graficoTimeline} />

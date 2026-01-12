@@ -13,9 +13,6 @@ export default function LandingPage() {
   return (
     <div className="container">
       <div className="hero-section">
-        <div className="logo-container">
-          <img src="/img/vivoGradiente.png" alt="Logo Vivo" className="logo" />
-        </div>
         <h1 className="hero-title">Eventos 2026</h1>
         <p className="hero-subtitle">
           Dashboard completo para gestão e análise de eventos corporativos
@@ -105,8 +102,8 @@ export default function LandingPage() {
 
       <div className="footer">
         <p>
-          © 2026 Eventos 2026 • Desenvolvido com 💜 para gestão profissional
-          de eventos
+          © 2026 Eventos 2026 • Desenvolvido com 💜 para gestão profissional de
+          eventos
         </p>
       </div>
     </div>
