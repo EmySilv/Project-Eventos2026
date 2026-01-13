@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { collection, getDocs, writeBatch, doc } from "firebase/firestore";
+import { collection, getDocs, writeBatch, doc, deleteDoc } from "firebase/firestore";
 import { db } from "@/app/lib/firebase";
 
 interface Filtro {
@@ -59,14 +59,46 @@ export function useEvents() {
     }
   };
 
+  const excluirTodosDados = async () => {
+    setLoading(true);
+
+    try {
+      const snap = await getDocs(ref);
+      
+      if (snap.empty) {
+        console.log("Nenhum dado para excluir");
+        return;
+      }
+
+      const batch = writeBatch(db);
+      
+      snap.docs.forEach((documento) => {
+        batch.delete(documento.ref);
+      });
+
+      await batch.commit();
+      
+      // Limpa o estado local
+      setEventos([]);
+      setColunas([]);
+      setFiltros({ coluna: "", valor: "", busca: "" });
+      
+      console.log(`${snap.size} documentos excluídos com sucesso`);
+    } catch (error) {
+      console.error("Erro ao excluir dados:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // ============================================
-  // 🔥 LÓGICA DE FILTROS - AGORA FUNCIONA!
+  // 🔥 LÓGICA DE FILTROS
   // ============================================
   const eventosFiltrados = useMemo(() => {
     let resultado = [...eventos];
 
     // Filtro 1: Por coluna e valor específico
-    // Se valor está vazio mas coluna está selecionada = "Todos os itens"
     if (filtros.coluna && filtros.valor) {
       resultado = resultado.filter(evento => {
         const valorEvento = String(evento[filtros.coluna] || "");
@@ -75,7 +107,6 @@ export function useEvents() {
     }
     // Se só tem coluna (sem valor) = mostra todos os itens dessa coluna
     else if (filtros.coluna && !filtros.valor) {
-      // Não filtra, só mantém todos os eventos para análise agregada
       resultado = eventos;
     }
 
@@ -96,17 +127,21 @@ export function useEvents() {
 
   // Carrega dados ao montar o componente
   useEffect(() => {
-    carregarFirebase();
+    // Só carrega no lado do cliente
+    if (typeof window !== 'undefined') {
+      carregarFirebase();
+    }
   }, []);
 
   return {
-    eventos: eventosFiltrados, // 🔥 Retorna eventos filtrados
-    eventosTodos: eventos, // Opção de acessar todos os eventos
+    eventos: eventosFiltrados,
+    eventosTodos: eventos,
     colunas,
     loading,
     salvarFirebase,
+    excluirTodosDados, // 🔥 Nova função
     filtros,
-    setFiltros, // 🔥 Permite atualizar filtros de fora
+    setFiltros,
     totalEventos: eventos.length,
     totalFiltrados: eventosFiltrados.length,
   };

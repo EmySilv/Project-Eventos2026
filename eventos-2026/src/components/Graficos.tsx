@@ -164,7 +164,7 @@ export default function Graficos() {
   }
 
   // ============================================
-  // RENDERIZAÇÃO
+  // RENDERIZAÇÃO COM GRID LAYOUT
   // ============================================
   return (
     <div>
@@ -197,8 +197,14 @@ export default function Graficos() {
         </div>
       </div>
 
-      {/* Gráficos dinâmicos */}
-      <div style={{ display: "grid", gap: "25px" }}>
+      {/* Gráficos em Grid Layout - 2 ou 3 por linha */}
+      <div 
+        style={{ 
+          display: "grid", 
+          gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
+          gap: "25px",
+        }}
+      >
         
         {/* Gráfico da coluna selecionada (se houver filtro) */}
         {graficosGenericos.colunaSelecionada && (
@@ -237,14 +243,16 @@ export default function Graficos() {
           <Bar data={graficosGenericos.analise3} />
         </GraficoCard>
 
-        {/* Gráfico 4: Timeline (se existir) */}
+        {/* Gráfico 4: Timeline (se existir) - ocupa linha inteira */}
         {graficoTimeline && (
-          <GraficoCard 
-            titulo={`Timeline - ${graficoTimeline.titulo}`}
-            tipo="linha"
-          >
-            <Line data={graficoTimeline} />
-          </GraficoCard>
+          <div style={{ gridColumn: "1 / -1" }}>
+            <GraficoCard 
+              titulo={`Timeline - ${graficoTimeline.titulo}`}
+              tipo="linha"
+            >
+              <Line data={graficoTimeline} />
+            </GraficoCard>
+          </div>
         )}
       </div>
     </div>
@@ -263,8 +271,6 @@ function GraficoCard({
   tipo: "barras" | "pizza" | "linha" | "rosca";
   children: React.ReactNode;
 }) {
-  const tamanhoMaximo = tipo === "pizza" || tipo === "rosca" ? 500 : 700;
-
   return (
     <div
       style={{
@@ -272,10 +278,13 @@ function GraficoCard({
         padding: "25px",
         borderRadius: "12px",
         boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
-      <h3 style={{ marginBottom: "20px", color: "#374151" }}>{titulo}</h3>
-      <div style={{ maxWidth: tamanhoMaximo, margin: "0 auto" }}>
+      <h3 style={{ marginBottom: "20px", color: "#374151", fontSize: "16px" }}>{titulo}</h3>
+      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
         {children}
       </div>
     </div>

@@ -5,13 +5,14 @@ import { useState, useRef } from "react";
 import { useEventsContext } from "@/app/context/eventsContext";
 
 export default function UploadExcel() {
-  const { salvarFirebase, loading } = useEventsContext();
+  const { salvarFirebase, excluirTodosDados, loading, eventosTodos } = useEventsContext();
 
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
   const [mensagem, setMensagem] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -76,6 +77,35 @@ export default function UploadExcel() {
       setStatus("error");
       setMensagem(
         `❌ Erro ao processar arquivo: ${error instanceof Error ? error.message : "Erro desconhecido"}`
+      );
+    }
+  };
+
+  const handleExcluirDados = async () => {
+    if (!confirmDelete) {
+      setConfirmDelete(true);
+      setTimeout(() => setConfirmDelete(false), 5000);
+      return;
+    }
+
+    try {
+      setStatus("loading");
+      setMensagem("🗑️ Excluindo todos os dados...");
+      
+      await excluirTodosDados();
+      
+      setStatus("success");
+      setMensagem("✅ Todos os dados foram excluídos com sucesso!");
+      setConfirmDelete(false);
+      
+      setTimeout(() => {
+        setStatus("idle");
+        setMensagem("");
+      }, 3000);
+    } catch (error) {
+      setStatus("error");
+      setMensagem(
+        `❌ Erro ao excluir dados: ${error instanceof Error ? error.message : "Erro desconhecido"}`
       );
     }
   };
@@ -202,63 +232,129 @@ export default function UploadExcel() {
         </div>
       </div>
           
-         
+      {/* Botões de Ação */}
+      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+        {/* Botão de processar */}
+        <button
+          onClick={processarArquivo}
+          disabled={loading || !file}
+          style={{
+            flex: 1,
+            minWidth: "200px",
+            padding: "16px 24px",
+            background: file && !loading 
+              ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
+              : "#cbd5e1",
+            color: "#fff",
+            border: "none",
+            borderRadius: "10px",
+            cursor: file && !loading ? "pointer" : "not-allowed",
+            fontWeight: "700",
+            fontSize: "16px",
+            transition: "all 0.3s ease",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "10px",
+            boxShadow: file && !loading ? "0 4px 15px rgba(102, 126, 234, 0.4)" : "none",
+            transform: "scale(1)",
+          }}
+          onMouseEnter={(e) => {
+            if (file && !loading) {
+              e.currentTarget.style.transform = "scale(1.02)";
+              e.currentTarget.style.boxShadow = "0 6px 20px rgba(102, 126, 234, 0.5)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "scale(1)";
+            e.currentTarget.style.boxShadow = file && !loading ? "0 4px 15px rgba(102, 126, 234, 0.4)" : "none";
+          }}
+        >
+          {loading ? (
+            <>
+              <div
+                style={{
+                  width: "20px",
+                  height: "20px",
+                  border: "3px solid rgba(255,255,255,0.3)",
+                  borderTopColor: "#fff",
+                  borderRadius: "50%",
+                  animation: "spin 0.8s linear infinite",
+                }}
+              />
+              Processando...
+            </>
+          ) : (
+            "🚀 Processar Upload"
+          )}
+        </button>
 
-      {/* Botão de processar - Estilizado */}
-      <button
-        onClick={processarArquivo}
-        disabled={loading || !file}
-        style={{
-          padding: "16px 24px",
-          background: file && !loading 
-            ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
-            : "#cbd5e1",
-          color: "#fff",
-          border: "none",
-          borderRadius: "10px",
-          cursor: file && !loading ? "pointer" : "not-allowed",
-          fontWeight: "700",
-          fontSize: "16px",
-          transition: "all 0.3s ease",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "10px",
-          boxShadow: file && !loading ? "0 4px 15px rgba(102, 126, 234, 0.4)" : "none",
-          transform: "scale(1)",
-        }}
-        onMouseEnter={(e) => {
-          if (file && !loading) {
-            e.currentTarget.style.transform = "scale(1.02)";
-            e.currentTarget.style.boxShadow = "0 6px 20px rgba(102, 126, 234, 0.5)";
-          }
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = "scale(1)";
-          e.currentTarget.style.boxShadow = file && !loading ? "0 4px 15px rgba(102, 126, 234, 0.4)" : "none";
-        }}
-      >
-        {loading ? (
-          <>
-            <div
-              style={{
-                width: "20px",
-                height: "20px",
-                border: "3px solid rgba(255,255,255,0.3)",
-                borderTopColor: "#fff",
-                borderRadius: "50%",
-                animation: "spin 0.8s linear infinite",
-              }}
-            />
-            Processando...
-          </>
-        
-        ) : (
-          "🚀 Processar Upload"
+        {/* Botão de excluir dados - só aparece se houver dados */}
+        {eventosTodos && eventosTodos.length > 0 && (
+          <button
+            onClick={handleExcluirDados}
+            disabled={loading}
+            style={{
+              flex: 1,
+              minWidth: "200px",
+              padding: "16px 24px",
+              background: confirmDelete
+                ? "linear-gradient(135deg, #dc2626 0%, #991b1b 100%)"
+                : "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+              color: "#fff",
+              border: "none",
+              borderRadius: "10px",
+              cursor: loading ? "not-allowed" : "pointer",
+              fontWeight: "700",
+              fontSize: "16px",
+              transition: "all 0.3s ease",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "10px",
+              boxShadow: "0 4px 15px rgba(239, 68, 68, 0.4)",
+              transform: "scale(1)",
+            }}
+            onMouseEnter={(e) => {
+              if (!loading) {
+                e.currentTarget.style.transform = "scale(1.02)";
+                e.currentTarget.style.boxShadow = "0 6px 20px rgba(239, 68, 68, 0.5)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "0 4px 15px rgba(239, 68, 68, 0.4)";
+            }}
+          >
+            {confirmDelete ? "⚠️ Confirmar Exclusão" : "🗑️ Excluir Todos os Dados"}
+          </button>
         )}
-      </button>
+      </div>
 
-      {/* Mensagem de status - Estilizada */}
+      {/* Aviso de confirmação */}
+      {confirmDelete && (
+        <div
+          style={{
+            padding: "16px 20px",
+            background: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)",
+            border: "2px solid #f59e0b",
+            borderRadius: "10px",
+            color: "#92400e",
+            fontSize: "14px",
+            fontWeight: "500",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <span style={{ fontSize: "20px" }}>⚠️</span>
+          <div>
+            <strong>ATENÇÃO:</strong> Esta ação é irreversível! Clique novamente no botão vermelho para confirmar a exclusão de todos os dados.
+          </div>
+        </div>
+      )}
+
+      {/* Mensagem de status */}
       {status !== "idle" && (
         <div
           style={{

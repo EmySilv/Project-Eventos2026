@@ -35,10 +35,8 @@ export default function PageDash() {
   return (
     <main className="container">
       <header style={{ textAlign: "center", marginBottom: "30px" }}>
-        <h1 style={{ fontSize: "36px", marginBottom: "10px" }}>Eventos 2026</h1>
-        <p style={{ color: "#666", fontSize: "16px" }}>
-          Dashboard interativo para visualização e gerenciamento de eventos
-        </p>
+        <h1 style={{ fontSize: "24px", marginBottom: "10px" }}>Dashboard interativo para visualização e gerenciamento de eventos</h1>
+        
       </header>
 
       {/* Upload */}
