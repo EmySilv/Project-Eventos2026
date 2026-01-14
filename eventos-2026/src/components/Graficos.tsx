@@ -27,7 +27,7 @@ export default function Graficos() {
   };
 
   // ============================================
-  // GRÁFICOS GENÉRICOS - FUNCIONAM PARA QUALQUER FILTRO
+  // GRÁFICOS GENÉRICOS - AGORA USANDO eventos (FILTRADOS)
   // ============================================
   const graficosGenericos = useMemo(() => {
     if (!eventos?.length || !colunas?.length) return null;
@@ -53,7 +53,7 @@ export default function Graficos() {
     const coluna1 = outrasColunas[0] || colunas[0];
     const dados1 = agruparPorColuna(coluna1, eventos);
     const top10Dados1 = Object.entries(dados1)
-      .sort(([, a], [, b]) => b - a)
+      .sort(([, a], [, b]) => (b as number) - (a as number))
       .slice(0, 10);
 
     // Gráfico 3: Análise cruzada - segunda coluna diferente
@@ -97,7 +97,7 @@ export default function Graficos() {
   }, [eventos, colunas, colunaSelecionada]);
 
   // ============================================
-  // GRÁFICO DE TIMELINE (se houver coluna de data)
+  // GRÁFICO DE TIMELINE - AGORA USANDO eventos (FILTRADOS)
   // ============================================
   const graficoTimeline = useMemo(() => {
     if (!eventos?.length || !colunas?.length) return null;
@@ -118,7 +118,6 @@ export default function Graficos() {
             dadosTimeline[dataValor] = (dadosTimeline[dataValor] || 0) + 1;
           }
         } catch {
-          // Ignora datas inválidas
         }
       }
     });
@@ -147,6 +146,7 @@ export default function Graficos() {
   if (!eventosTodos?.length || !colunas?.length) {
     return (
       <div style={{ textAlign: "center", padding: "40px", color: "#999" }}>
+        <i className="ri-pie-chart-2-line" style={{ fontSize: "64px", display: "block", marginBottom: "20px", opacity: 0.5 }}></i>
         <p style={{ fontSize: "18px" }}>Sem dados para exibir gráficos</p>
         <p style={{ fontSize: "14px", marginTop: "10px" }}>
           Faça upload de uma planilha para começar
@@ -158,7 +158,8 @@ export default function Graficos() {
   if (!graficosGenericos) {
     return (
       <div style={{ textAlign: "center", padding: "40px", color: "#999" }}>
-        <p style={{ fontSize: "18px" }}>⏳ Processando dados...</p>
+        <i className="ri-loader-4-line" style={{ fontSize: "48px", display: "block", marginBottom: "20px", animation: "spin 1s linear infinite" }}></i>
+        <p style={{ fontSize: "18px" }}>Processando dados...</p>
       </div>
     );
   }
@@ -168,93 +169,127 @@ export default function Graficos() {
   // ============================================
   return (
     <div>
-      {/* Indicador de contexto */}
+      {/* Indicador de contexto - ATUALIZADO */}
       <div
         style={{
           padding: "15px",
-          background: colunaSelecionada ? "#eff6ff" : "#f0fdf4",
+          background: colunaSelecionada || filtros?.busca ? "#eff6ff" : "#f0fdf4",
           borderRadius: "8px",
           marginBottom: "25px",
-          borderLeft: `4px solid ${colunaSelecionada ? "#4f46e5" : "#10b981"}`,
+          borderLeft: `4px solid ${colunaSelecionada || filtros?.busca ? "#4f46e5" : "#10b981"}`,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span style={{ fontSize: "20px" }}>
-            {colunaSelecionada ? "🎯" : "📊"}
-          </span>
+          <i 
+            className={colunaSelecionada || filtros?.busca ? "ri-focus-3-line" : "ri-dashboard-line"}
+            style={{ fontSize: "24px", color: colunaSelecionada || filtros?.busca ? "#4f46e5" : "#10b981" }}
+          ></i>
           <div>
             <strong>
               {colunaSelecionada
                 ? `Análise focada em: ${colunaSelecionada}`
+                : filtros?.busca
+                ? `Resultado da busca: "${filtros.busca}"`
                 : "Visão Geral de Todos os Eventos"}
             </strong>
             <p style={{ margin: "5px 0 0 0", fontSize: "14px", color: "#666" }}>
-              {colunaSelecionada
+              {colunaSelecionada || filtros?.busca
                 ? `Mostrando ${eventosFiltrados} de ${totalEventos} eventos`
                 : `Total de ${totalEventos} eventos cadastrados`}
             </p>
+            {filtros?.busca && colunaSelecionada && (
+              <p style={{ margin: "5px 0 0 0", fontSize: "13px", color: "#666", fontStyle: "italic" }}>
+                Filtrando por: {colunaSelecionada} + Busca global
+              </p>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Gráficos em Grid Layout - 2 ou 3 por linha */}
-      <div 
-        style={{ 
-          display: "grid", 
-          gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-          gap: "25px",
-        }}
-      >
-        
-        {/* Gráfico da coluna selecionada (se houver filtro) */}
-        {graficosGenericos.colunaSelecionada && (
-          <GraficoCard 
-            titulo={`Distribuição: ${colunaSelecionada}`}
-            tipo="pizza"
+      {/* Mensagem se não há dados filtrados */}
+      {eventos?.length === 0 ? (
+        <div style={{ 
+          textAlign: "center", 
+          padding: "60px 20px",
+          background: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)",
+          borderRadius: "12px",
+          border: "2px solid #f59e0b"
+        }}>
+          <i className="ri-filter-off-line" style={{ fontSize: "64px", color: "#d97706", marginBottom: "20px", display: "block" }}></i>
+          <p style={{ fontSize: "20px", fontWeight: 600, color: "#92400e", margin: "0 0 10px 0" }}>
+            Nenhum evento encontrado com os filtros aplicados
+          </p>
+          <p style={{ fontSize: "14px", color: "#78350f", margin: 0 }}>
+            Tente ajustar os filtros ou limpar a busca
+          </p>
+        </div>
+      ) : (
+        <>
+          {/* Gráficos em Grid Layout - 2 ou 3 por linha */}
+          <div 
+            style={{ 
+              display: "grid", 
+              gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
+              gap: "25px",
+            }}
           >
-            <Pie data={graficosGenericos.colunaSelecionada} />
-          </GraficoCard>
-        )}
+            
+            {/* Gráfico da coluna selecionada (se houver filtro) */}
+            {graficosGenericos.colunaSelecionada && (
+              <GraficoCard 
+                titulo={`Distribuição: ${colunaSelecionada}`}
+                tipo="pizza"
+                icone="ri-pie-chart-line"
+              >
+                <Pie data={graficosGenericos.colunaSelecionada} />
+              </GraficoCard>
+            )}
 
-        {/* Gráfico 1: Análise Cruzada */}
-        <GraficoCard 
-          titulo={`Top 10 - ${graficosGenericos.analise1.titulo}`}
-          tipo="barras"
-        >
-          <Bar
-            data={graficosGenericos.analise1}
-            options={{ indexAxis: "y" as const }}
-          />
-        </GraficoCard>
-
-        {/* Gráfico 2: Análise Cruzada */}
-        <GraficoCard 
-          titulo={`Análise por ${graficosGenericos.analise2.titulo}`}
-          tipo="rosca"
-        >
-          <Doughnut data={graficosGenericos.analise2} />
-        </GraficoCard>
-
-        {/* Gráfico 3: Análise Cruzada */}
-        <GraficoCard 
-          titulo={`Distribuição: ${graficosGenericos.analise3.titulo}`}
-          tipo="barras"
-        >
-          <Bar data={graficosGenericos.analise3} />
-        </GraficoCard>
-
-        {/* Gráfico 4: Timeline (se existir) - ocupa linha inteira */}
-        {graficoTimeline && (
-          <div style={{ gridColumn: "1 / -1" }}>
+            {/* Gráfico 1: Análise Cruzada */}
             <GraficoCard 
-              titulo={`Timeline - ${graficoTimeline.titulo}`}
-              tipo="linha"
+              titulo={`Top 10 - ${graficosGenericos.analise1.titulo}`}
+              tipo="barras"
+              icone="ri-bar-chart-horizontal-line"
             >
-              <Line data={graficoTimeline} />
+              <Bar
+                data={graficosGenericos.analise1}
+                options={{ indexAxis: "y" as const }}
+              />
             </GraficoCard>
+
+            {/* Gráfico 2: Análise Cruzada */}
+            <GraficoCard 
+              titulo={`Análise por ${graficosGenericos.analise2.titulo}`}
+              tipo="rosca"
+              icone="ri-donut-chart-line"
+            >
+              <Doughnut data={graficosGenericos.analise2} />
+            </GraficoCard>
+
+            {/* Gráfico 3: Análise Cruzada */}
+            <GraficoCard 
+              titulo={`Distribuição: ${graficosGenericos.analise3.titulo}`}
+              tipo="barras"
+              icone="ri-bar-chart-box-line"
+            >
+              <Bar data={graficosGenericos.analise3} />
+            </GraficoCard>
+
+            {/* Gráfico 4: Timeline (se existir) - ocupa linha inteira */}
+            {graficoTimeline && (
+              <div style={{ gridColumn: "1 / -1" }}>
+                <GraficoCard 
+                  titulo={`Timeline - ${graficoTimeline.titulo}`}
+                  tipo="linha"
+                  icone="ri-line-chart-line"
+                >
+                  <Line data={graficoTimeline} />
+                </GraficoCard>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 }
@@ -265,10 +300,12 @@ export default function Graficos() {
 function GraficoCard({
   titulo,
   tipo,
+  icone,
   children,
 }: {
   titulo: string;
   tipo: "barras" | "pizza" | "linha" | "rosca";
+  icone: string;
   children: React.ReactNode;
 }) {
   return (
@@ -281,9 +318,28 @@ function GraficoCard({
         height: "100%",
         display: "flex",
         flexDirection: "column",
+        transition: "all 0.3s ease",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-4px)";
+        e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.12)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translateY(0)";
+        e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)";
       }}
     >
-      <h3 style={{ marginBottom: "20px", color: "#374151", fontSize: "16px" }}>{titulo}</h3>
+      <h3 style={{ 
+        marginBottom: "20px", 
+        color: "#374151", 
+        fontSize: "16px",
+        display: "flex",
+        alignItems: "center",
+        gap: "8px"
+      }}>
+        <i className={icone} style={{ fontSize: "20px", color: "#4f46e5" }}></i>
+        {titulo}
+      </h3>
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
         {children}
       </div>

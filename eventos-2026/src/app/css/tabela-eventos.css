@@ -1,0 +1,361 @@
+/* Container Principal */
+.tabela-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Estado Vazio */
+.tabela-vazia {
+  text-align: center;
+  padding: 60px 20px;
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  border-radius: 12px;
+}
+
+.tabela-vazia-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  opacity: 0.5;
+  color: #9ca3af;
+}
+
+.tabela-vazia-titulo {
+  font-size: 20px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 10px;
+}
+
+.tabela-vazia-subtitulo {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* Controles da Tabela */
+.tabela-controles {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 15px 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.controles-esquerda,
+.controles-direita {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.controle-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.controle-label i {
+  font-size: 18px;
+}
+
+.controle-select {
+  padding: 8px 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.controle-select:hover {
+  border-color: #cbd5e1;
+}
+
+.controle-select:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.btn-exportar {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.btn-exportar i {
+  font-size: 18px;
+}
+
+.btn-exportar:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+/* Wrapper da Tabela */
+.tabela-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  background: white;
+}
+
+/* Tabela */
+.tabela-eventos {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.tabela-eventos thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tabela-eventos th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.tabela-eventos th i {
+  font-size: 16px;
+  vertical-align: middle;
+}
+
+.coluna-id {
+  text-align: center !important;
+  background: rgba(255, 255, 255, 0.1);
+  font-weight: 700;
+  position: sticky;
+  left: 0;
+  z-index: 11;
+  min-width: 80px;
+}
+
+.coluna-ordenavel {
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s ease;
+}
+
+.coluna-ordenavel:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.th-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.icone-ordenacao {
+  font-size: 14px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.icone-ordenacao i {
+  font-size: 14px;
+}
+
+.coluna-ordenavel:hover .icone-ordenacao {
+  opacity: 1;
+}
+
+/* Linhas da Tabela */
+.linha-evento {
+  transition: background-color 0.2s ease;
+}
+
+.linha-evento:nth-child(even) {
+  background: #f9fafb;
+}
+
+.linha-evento:hover {
+  background: #eff6ff !important;
+}
+
+.celula-dado {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 13px;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.linha-evento .coluna-id {
+  background: white;
+  font-weight: 700;
+  color: #4f46e5;
+}
+
+.linha-evento:nth-child(even) .coluna-id {
+  background: #f9fafb;
+}
+
+/* Rodapé */
+.tabela-rodape {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 15px 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.rodape-info {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rodape-info i {
+  font-size: 16px;
+}
+
+.rodape-info strong {
+  color: #4f46e5;
+  font-weight: 700;
+}
+
+/* Paginação */
+.paginacao {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-paginacao {
+  padding: 8px 14px;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  color: #374151;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-paginacao i {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.btn-paginacao:hover:not(:disabled) {
+  background: #4f46e5;
+  border-color: #4f46e5;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.btn-paginacao:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.paginacao-info {
+  padding: 0 10px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.paginacao-info strong {
+  color: #4f46e5;
+  font-weight: 700;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .tabela-controles {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .controles-esquerda,
+  .controles-direita {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .btn-exportar {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .tabela-rodape {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .paginacao {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .rodape-info {
+    text-align: center;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .tabela-eventos th,
+  .celula-dado {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .btn-paginacao {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+
+  .btn-paginacao i {
+    font-size: 16px;
+  }
+
+  .paginacao-info {
+    font-size: 12px;
+  }
+}

@@ -77,9 +77,9 @@ export default function PageDash() {
       </section>
 
       <section className="card">
-        <h2>Visualizações</h2>
+        <h2>Visualizações em gráficos</h2>
         <p style={{ color: "#666", fontSize: "14px", marginBottom: "15px" }}>
-          Análise visual dos dados com diferentes tipos de gráficos
+          Faça uma análise visual dos dados com diferentes tipos de gráficos
         </p>
         <Graficos />
       </section>
@@ -87,7 +87,7 @@ export default function PageDash() {
       <section className="card">
         <h2>Tabela de Dados</h2>
         <p style={{ color: "#666", fontSize: "14px", marginBottom: "15px" }}>
-          Visualização completa de todos os eventos cadastrados
+          Visualize todos os eventos cadastrados
         </p>
         <TabelaEventos />
       </section>
