@@ -35,10 +35,8 @@ export default function PageDash() {
   return (
     <main className="container">
       <header style={{ textAlign: "center", marginBottom: "30px" }}>
-        <h1 style={{ fontSize: "36px", marginBottom: "10px" }}>Eventos 2026</h1>
-        <p style={{ color: "#666", fontSize: "16px" }}>
-          Dashboard interativo para visualização e gerenciamento de eventos
-        </p>
+        <h1 style={{ fontSize: "24px", marginBottom: "10px" }}>Dashboard interativo para visualização e gerenciamento de eventos</h1>
+        
       </header>
 
       {/* Upload */}
@@ -79,9 +77,9 @@ export default function PageDash() {
       </section>
 
       <section className="card">
-        <h2>Visualizações</h2>
+        <h2>Visualizações em gráficos</h2>
         <p style={{ color: "#666", fontSize: "14px", marginBottom: "15px" }}>
-          Análise visual dos dados com diferentes tipos de gráficos
+          Faça uma análise visual dos dados com diferentes tipos de gráficos
         </p>
         <Graficos />
       </section>
@@ -89,7 +87,7 @@ export default function PageDash() {
       <section className="card">
         <h2>Tabela de Dados</h2>
         <p style={{ color: "#666", fontSize: "14px", marginBottom: "15px" }}>
-          Visualização completa de todos os eventos cadastrados
+          Visualize todos os eventos cadastrados
         </p>
         <TabelaEventos />
       </section>
