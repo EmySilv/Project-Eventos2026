@@ -99,4 +99,4 @@ src/
 
 ## Autor
 
-Desenvolvido por Emilly Vitória para o desafio Eventos 2026.
+Desenvolvidopor Emilly Vitória para o desafio Eventos 2026.
