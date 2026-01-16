@@ -37,7 +37,7 @@
   padding: 16px 32px;
   font-size: 18px;
   background: white;
-  color: #667eea;
+  color: #ee6b00;
   border: none;
   border-radius: 12px;
   font-weight: 600;
@@ -47,8 +47,8 @@
 }
 
 .cta-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  background: #f3f4f6;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
 }
 
 .features-grid {

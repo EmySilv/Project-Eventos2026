@@ -1,27 +1,28 @@
-# Eventos 2026 - Dashboard 
+# 📊 Eventos 2026
 
-Sistema web para upload, armazenamento e visualização de dados sobre eventos em 2026.
+> Dashboard interativo para análise de dados sobre eventos que ocorrerão'
 
-## Funcionalidades
+## 🎯 Sobre o Projeto
 
-- Upload de planilhas Excel (.xlsx, .xls)
-- Armazenamento em Firebase Firestore
-- Dashboard interativo com:
-  - Tabela de dados completa
-  - Gráfico de barras
-  - Gráfico de pizza
-  - Filtros por coluna
-  
-## Tecnologias Utilizadas
+Este projeto foi desenvolvido para analisar dados de eventos e obter insights organizacionais sobre os principais eventos que irão ocorrer.
+
+## 🛠️ Ferramentas Utilizadas
 
 - **Frontend:** Next.js 14, React, TypeScript
-- **Banco de Dados:** Firebase Firestore
-- **Gráficos:** Chart.js + React-Chartjs-2
 - **Processamento Excel:** SheetJS (xlsx)
-- **Estilização:** CSS Modules
+- **Hospedagem do site:** Vercel
+- **Banco de Dados:** Firebase Firestore
+- **Tratamento** - Excel/Google Sheets
+- **Gráficos:** Chart.js + React-Chartjs-2
 
-## Como Executar
+## 🚀 Como Acessar
 
+### Dashboard Online
+Acesse o dashboard completo, acesse sua conta do Vercel e clique no link:
+
+👉 **eventos-2026-git-main-emillys-projects.vercel.app**
+
+### Executar Localmente
 ### Pré-requisitos
 - Node.js 18+
 - Conta no Firebase
@@ -31,31 +32,41 @@ Sistema web para upload, armazenamento e visualização de dados sobre eventos e
 1. Clone o repositório:
 bash
 
-git clone https://github.com/EmySilv/Project-Eventos2026.git
-cd Project-Eventos2026
+`git clone https://github.com/EmySilv/Project-Eventos2026.git`
+
+`cd Project-Eventos2026`
 
 
 2. Instale as dependências:
 bash
 
-npm install
+`npm install`
 
 
 3. Execute o projeto:
 bash
 
-npm run dev
+`npm run dev`
 
 
-4. Acesse: `http://localhost:3000`
+4. Acesse: 
+`http://localhost:3000`
 
-## Estrutura do Projeto
+## 📁 Arquivos do Projeto
 
+```
 src/
 ├── app/
-│   ├── page.tsx           # Página principal
-│   ├── layout.tsx         # Layout raiz
-│   ├── globals.css        # Estilos globais
+│   ├── page.tsx                 # Página principal
+│   ├── layout.tsx               # Layout raiz
+│   ├── css/                     # Estilos
+│   │   ├──  upload-excel.css  
+│   │   ├── tabela-eventos.css
+│   │   ├── page.css
+│   │   ├── landingpage.css
+│   │   └── filtros.css
+│   ├── dashboards/
+│   │   └── page.tsx
 │   ├── context/
 │   │   └── eventsContext.tsx
 │   ├── hooks/
@@ -67,36 +78,15 @@ src/
 │   ├── UploadExcel.tsx
 │   ├── TabelaEventos.tsx
 │   ├── Graficos.tsx
-│   └── Filtros.tsx
+│   ├── Filtros.tsx
+│   └── Estatisticas.tsx
 └── data/
-    └── Exemplo_BaseEmilly.xlsx       
-\`\`\`
+    └── Exemplo_BaseEmilly.xlsx
+```
 
-## Colunas Esperadas na Planilha
+## 📊 Dados Utilizados
 
-- Cód
-- Nome
-- Tema
-- Tipo
-- Data Inicial
-- Data Final
-- Local
-- Cidade
-- Empresa
-- Formato
-- Site Evento
-- Tem Fornecedor Patrocinador
-- Nome Fornecedor Patrocinador
-- E-Mail Fornecedor Patrocinador
-- Vivo Patrocina
-- Pago
-- Valor Inscrição
+A planilha exemplo contém dados sobre Nome do evento, data que ocorreu, se a Vivo patrocina e outros dados. Todos os dados estão disponíveis na pasta data/Exemplo_BaseEmilly.xslx, que está alocada no projeto.
 
-## Link do Dashboard
-
- **Dashboard Online:** [https://eventos-2026.vercel.app](https://eventos2026.vercel.app)
-
-
-## Autor
-
-Desenvolvidopor Emilly Vitória para o desafio Eventos 2026.
+## 👤 Autor
+Desenvolvido por Emilly Vitória
