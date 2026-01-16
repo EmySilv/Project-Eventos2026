@@ -169,43 +169,6 @@ export default function Graficos() {
   // ============================================
   return (
     <div>
-      {/* Indicador de contexto - ATUALIZADO */}
-      <div
-        style={{
-          padding: "15px",
-          background: colunaSelecionada || filtros?.busca ? "#eff6ff" : "#f0fdf4",
-          borderRadius: "8px",
-          marginBottom: "25px",
-          borderLeft: `4px solid ${colunaSelecionada || filtros?.busca ? "#4f46e5" : "#10b981"}`,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <i 
-            className={colunaSelecionada || filtros?.busca ? "ri-focus-3-line" : "ri-dashboard-line"}
-            style={{ fontSize: "24px", color: colunaSelecionada || filtros?.busca ? "#4f46e5" : "#10b981" }}
-          ></i>
-          <div>
-            <strong>
-              {colunaSelecionada
-                ? `Análise focada em: ${colunaSelecionada}`
-                : filtros?.busca
-                ? `Resultado da busca: "${filtros.busca}"`
-                : "Visão Geral de Todos os Eventos"}
-            </strong>
-            <p style={{ margin: "5px 0 0 0", fontSize: "14px", color: "#666" }}>
-              {colunaSelecionada || filtros?.busca
-                ? `Mostrando ${eventosFiltrados} de ${totalEventos} eventos`
-                : `Total de ${totalEventos} eventos cadastrados`}
-            </p>
-            {filtros?.busca && colunaSelecionada && (
-              <p style={{ margin: "5px 0 0 0", fontSize: "13px", color: "#666", fontStyle: "italic" }}>
-                Filtrando por: {colunaSelecionada} + Busca global
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
-
       {/* Mensagem se não há dados filtrados */}
       {eventos?.length === 0 ? (
         <div style={{ 

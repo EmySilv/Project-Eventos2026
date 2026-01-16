@@ -29,7 +29,6 @@ export default function UploadExcel() {
 
   // Validação de arquivo
   const validarArquivo = (arquivo: File): string | null => {
-    // Verifica extensão
     const extensoesValidas = [".xlsx", ".xls"];
     const extensao = arquivo.name.substring(arquivo.name.lastIndexOf("."));
 
@@ -37,18 +36,16 @@ export default function UploadExcel() {
       return "Formato inválido! Use apenas arquivos .xlsx ou .xls";
     }
 
-    // Verifica tamanho (máximo 10MB)
-    const tamanhoMaximo = 10 * 1024 * 1024; // 10MB
+    const tamanhoMaximo = 10 * 1024 * 1024;
     if (arquivo.size > tamanhoMaximo) {
       return "Arquivo muito grande! Tamanho máximo: 10MB";
     }
 
-    // Verifica se o arquivo não está vazio
     if (arquivo.size === 0) {
       return "Arquivo vazio! Selecione um arquivo válido";
     }
 
-    return null; // Arquivo válido
+    return null;
   };
 
   // Função para verificar duplicados
@@ -61,9 +58,7 @@ export default function UploadExcel() {
     const dadosUnicos: any[] = [];
 
     novosDados.forEach((novoEvento, index) => {
-      // Verifica se existe um evento com as mesmas propriedades principais
       const isDuplicado = eventosTodos.some((eventoExistente: any) => {
-        // CUSTOMIZE AQUI: Defina os campos que identificam um duplicado
         const nomeIgual = String(eventoExistente.Nome || "").toLowerCase().trim() === 
                          String(novoEvento.Nome || "").toLowerCase().trim();
         
@@ -73,14 +68,13 @@ export default function UploadExcel() {
         const localIgual = String(eventoExistente.Local || "").toLowerCase().trim() === 
                           String(novoEvento.Local || "").toLowerCase().trim();
 
-        // Considera duplicado se TODOS os campos principais coincidirem
         return nomeIgual && dataIgual && localIgual;
       });
 
       if (isDuplicado) {
         duplicadosEncontrados.push({ 
           ...novoEvento, 
-          linhaOriginal: index + 2 // +2 porque linha 1 é cabeçalho e index começa em 0
+          linhaOriginal: index + 2
         });
       } else {
         dadosUnicos.push(novoEvento);
@@ -100,6 +94,10 @@ export default function UploadExcel() {
         setStatus("error");
         setMensagem(erro);
         setFile(null);
+        // Reseta o input para permitir selecionar o mesmo arquivo novamente
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
         return;
       }
 
@@ -111,7 +109,6 @@ export default function UploadExcel() {
     }
   };
 
-  // Drag and Drop
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -165,7 +162,6 @@ export default function UploadExcel() {
       const buffer = await file.arrayBuffer();
       const workbook = XLSX.read(buffer, { cellDates: true });
       
-      // Verifica se há pelo menos uma planilha
       if (workbook.SheetNames.length === 0) {
         throw new Error("Arquivo sem planilhas válidas");
       }
@@ -173,7 +169,6 @@ export default function UploadExcel() {
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
       const json = XLSX.utils.sheet_to_json(sheet, { defval: "" });
 
-      // Validações adicionais
       if (json.length === 0) {
         setStatus("error");
         setMensagem("Planilha vazia! Adicione dados antes de fazer upload.");
@@ -190,7 +185,6 @@ export default function UploadExcel() {
         return;
       }
 
-      // Verifica se há colunas
       const primeiraLinha: any = json[0];
       if (Object.keys(primeiraLinha).length === 0) {
         setStatus("error");
@@ -204,13 +198,11 @@ export default function UploadExcel() {
       setDadosProcessados({ todos: json, unicos: dadosUnicos });
       setDuplicados(duplicadosEncontrados);
 
-      // Se encontrou duplicados, mostra o modal
       if (duplicadosEncontrados.length > 0) {
         setMostrarModalDuplicados(true);
         setStatus("idle");
         setMensagem("");
       } else {
-        // Se não há duplicados, salva direto
         await confirmarSalvamento(dadosUnicos);
       }
 
@@ -242,6 +234,10 @@ export default function UploadExcel() {
         setMensagem("");
         setDadosProcessados(null);
         setDuplicados([]);
+        // Reseta o input para permitir upload do mesmo arquivo novamente
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
       }, 5000);
     } catch (error) {
       setStatus("error");
@@ -304,7 +300,6 @@ export default function UploadExcel() {
 
   return (
     <div className="upload-container">
-      {/* Input escondido */}
       <input
         ref={fileInputRef}
         type="file"
@@ -313,7 +308,6 @@ export default function UploadExcel() {
         style={{ display: "none" }}
       />
 
-      {/* Área de drag and drop / clique */}
       <div
         onClick={handleButtonClick}
         onDragEnter={handleDrag}
@@ -364,7 +358,6 @@ export default function UploadExcel() {
         )}
       </div>
 
-      {/* Botões de Ação */}
       <div className="upload-actions">
         <button
           onClick={processarArquivo}
@@ -405,7 +398,6 @@ export default function UploadExcel() {
         )}
       </div>
 
-      {/* Aviso de confirmação */}
       {confirmDelete && (
         <div className="alerta-confirmacao">
           <i className="ri-error-warning-line alerta-icon"></i>
@@ -416,7 +408,6 @@ export default function UploadExcel() {
         </div>
       )}
 
-      {/* Mensagem de status */}
       {status !== "idle" && (
         <div className={`alerta alerta-${status}`}>
           <i className={`alerta-icon ${
@@ -428,7 +419,6 @@ export default function UploadExcel() {
         </div>
       )}
 
-      {/* Modal de Duplicados */}
       {mostrarModalDuplicados && (
         <div className="modal-duplicados-overlay">
           <div className="modal-duplicados-content">

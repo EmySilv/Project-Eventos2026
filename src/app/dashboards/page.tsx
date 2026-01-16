@@ -8,6 +8,7 @@ import TabelaEventos from "@/components/TabelaEventos";
 import Estatisticas from "@/components/Estatisticas";
 import { useEventsContext } from "@/app/context/eventsContext";
 import "remixicon/fonts/remixicon.css";
+import "@/app/css/page.css";
 
 export default function PageDash() {
   const { loading } = useEventsContext();

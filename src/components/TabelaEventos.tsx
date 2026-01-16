@@ -36,7 +36,135 @@ export default function TabelaEventos() {
   const [itensPorPagina, setItensPorPagina] = useState(10);
   const [ordenacao, setOrdenacao] = useState<OrdenacaoConfig | null>(null);
 
-  if (!eventos?.length) {
+  // Função melhorada para formatar datas (SEM horário)
+  const formatarData = (valor: any): string => {
+    if (!valor) return "";
+    
+    try {
+      let data: Date | null = null;
+      
+      // Se for um Timestamp do Firestore/Firebase
+      if (valor && typeof valor === 'object' && 'seconds' in valor) {
+        // Converte Timestamp para Date usando os segundos
+        data = new Date(valor.seconds * 1000);
+      }
+      // Se for um objeto Date
+      else if (valor instanceof Date) {
+        data = valor;
+      }
+      // Se for número (serial do Excel)
+      else if (typeof valor === 'number') {
+        // Converte serial do Excel para data
+        const diasDesde1900 = valor - 25569; // 25569 é a diferença entre 1900 e 1970
+        data = new Date(diasDesde1900 * 86400 * 1000);
+      }
+      // Se for string
+      else if (typeof valor === 'string') {
+        const valorString = valor.trim();
+        
+        // Se contém "Timestamp(" é um Timestamp como string
+        if (valorString.includes('Timestamp(')) {
+          // Extrai os segundos do formato "Timestamp(seconds=1777345228, nanoseconds=0)"
+          const match = valorString.match(/seconds=(\d+)/);
+          if (match && match[1]) {
+            data = new Date(parseInt(match[1]) * 1000);
+          }
+        }
+        // Se já está no formato dd/mm/yyyy, retorna
+        else if (/^\d{2}\/\d{2}\/\d{4}$/.test(valorString)) {
+          return valorString;
+        }
+        // Tenta parsear a string
+        else {
+          data = new Date(valorString);
+        }
+      }
+      
+      // Se conseguiu criar uma data válida
+      if (data && !isNaN(data.getTime())) {
+        const dia = String(data.getDate()).padStart(2, '0');
+        const mes = String(data.getMonth() + 1).padStart(2, '0');
+        const ano = data.getFullYear();
+        return `${dia}/${mes}/${ano}`;
+      }
+      
+      // Se não conseguiu converter, retorna o valor original como string
+      return String(valor);
+    } catch {
+      return String(valor);
+    }
+  };
+
+  // Função melhorada para verificar se uma linha está vazia
+  const linhaEstaVazia = (evento: any): boolean => {
+    if (!evento || typeof evento !== 'object') return true;
+    
+    // Pega todos os valores do objeto
+    const valores = Object.values(evento);
+    
+    // Se não tem valores, está vazia
+    if (valores.length === 0) return true;
+    
+    // Verifica se TODOS os valores são vazios/nulos/undefined
+    return valores.every(valor => {
+      // Null ou undefined
+      if (valor === null || valor === undefined) return true;
+      
+      // Converte para string e remove espaços
+      const valorString = String(valor).trim().toLowerCase();
+      
+      // Considera vazio se for: "", "null", "undefined", "nan"
+      return valorString === "" || 
+             valorString === "null" || 
+             valorString === "undefined" || 
+             valorString === "nan";
+    });
+  };
+
+  // Filtra eventos vazios
+  const eventosFiltrados = useMemo(() => {
+    if (!eventos?.length) return [];
+    
+    const filtrados = eventos.filter((evento: any) => {
+      const estaVazia = linhaEstaVazia(evento);
+      return !estaVazia;
+    });
+    
+    return filtrados;
+  }, [eventos]);
+
+  // Garante que só renderiza colunas que EXISTEM nos dados
+  const colunasVisiveis = useMemo(() => {
+    if (!eventosFiltrados?.length) return [];
+    return ORDEM_COLUNAS.filter((col) =>
+      Object.keys(eventosFiltrados[0]).includes(col)
+    );
+  }, [eventosFiltrados]);
+
+  // Identificar colunas de data
+  const colunasData = useMemo(() => {
+    return colunasVisiveis.filter(col => 
+      col.toLowerCase().includes("data")
+    );
+  }, [colunasVisiveis]);
+
+  // Ordenação
+  const eventosOrdenados = useMemo(() => {
+    if (!ordenacao) return eventosFiltrados;
+
+    return [...eventosFiltrados].sort((a, b) => {
+      const valorA = String(a[ordenacao.coluna] || "");
+      const valorB = String(b[ordenacao.coluna] || "");
+
+      const comparacao = valorA.localeCompare(valorB, "pt-BR", {
+        numeric: true,
+      });
+
+      return ordenacao.direcao === "asc" ? comparacao : -comparacao;
+    });
+  }, [eventosFiltrados, ordenacao]);
+
+  if (!eventosFiltrados?.length) {
     return (
       <div className="tabela-vazia">
         <i className="ri-inbox-line tabela-vazia-icon"></i>
@@ -48,27 +176,6 @@ export default function TabelaEventos() {
     );
   }
 
-  // Garante que só renderiza colunas que EXISTEM nos dados
-  const colunasVisiveis = ORDEM_COLUNAS.filter((col) =>
-    Object.keys(eventos[0]).includes(col)
-  );
-
-  // Ordenação
-  const eventosOrdenados = useMemo(() => {
-    if (!ordenacao) return eventos;
-
-    return [...eventos].sort((a, b) => {
-      const valorA = String(a[ordenacao.coluna] || "");
-      const valorB = String(b[ordenacao.coluna] || "");
-
-      const comparacao = valorA.localeCompare(valorB, "pt-BR", {
-        numeric: true,
-      });
-
-      return ordenacao.direcao === "asc" ? comparacao : -comparacao;
-    });
-  }, [eventos, ordenacao]);
-
   // Paginação
   const totalPaginas = Math.ceil(eventosOrdenados.length / itensPorPagina);
   const indiceInicio = (paginaAtual - 1) * itensPorPagina;
@@ -79,19 +186,30 @@ export default function TabelaEventos() {
   const handleOrdenar = (coluna: string) => {
     setOrdenacao((prev) => {
       if (prev?.coluna === coluna) {
-        // Se já está ordenando por essa coluna, inverte a direção
         return {
           coluna,
           direcao: prev.direcao === "asc" ? "desc" : "asc",
         };
       }
-      // Nova coluna, começa ascendente
       return { coluna, direcao: "asc" };
     });
   };
 
   const exportarParaExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(eventosOrdenados);
+    // Prepara os dados com datas formatadas para exportação
+    const dadosParaExportar = eventosOrdenados.map((evento: { [x: string]: any; }) => {
+      const eventoFormatado: any = {};
+      Object.keys(evento).forEach(coluna => {
+        if (colunasData.includes(coluna)) {
+          eventoFormatado[coluna] = formatarData(evento[coluna]);
+        } else {
+          eventoFormatado[coluna] = evento[coluna];
+        }
+      });
+      return eventoFormatado;
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(dadosParaExportar);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Eventos");
     XLSX.writeFile(workbook, `eventos_${new Date().toISOString().split('T')[0]}.xlsx`);
@@ -104,6 +222,14 @@ export default function TabelaEventos() {
     return ordenacao.direcao === "asc" ? 
       <i className="ri-arrow-up-line"></i> : 
       <i className="ri-arrow-down-line"></i>;
+  };
+
+  // Formata o valor da célula
+  const formatarValorCelula = (coluna: string, valor: any): string => {
+    if (colunasData.includes(coluna)) {
+      return formatarData(valor);
+    }
+    return String(valor ?? "");
   };
 
   return (
@@ -179,7 +305,7 @@ export default function TabelaEventos() {
 
                   {colunasVisiveis.map((col) => (
                     <td key={`${idGlobal}-${col}`} className="celula-dado">
-                      {String(evento[col] ?? "")}
+                      {formatarValorCelula(col, evento[col])}
                     </td>
                   ))}
                 </tr>
@@ -190,6 +316,11 @@ export default function TabelaEventos() {
       </div>
 
       {/* Rodapé com Paginação */}
+      <div className="tabela-rodape">
+        <div className="rodape-info">
+          <i className="ri-information-line"></i>
+          Mostrando <strong>{indiceInicio + 1}</strong> a <strong>{Math.min(indiceFim, eventosOrdenados.length)}</strong> de <strong>{eventosOrdenados.length}</strong> eventos
+        </div>
 
         <div className="paginacao">
           <button
@@ -234,6 +365,7 @@ export default function TabelaEventos() {
             <i className="ri-skip-forward-mini-line"></i>
           </button>
         </div>
-      </div>    
+      </div>
+    </div>    
   );
 }
