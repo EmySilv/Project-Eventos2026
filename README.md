@@ -1,6 +1,6 @@
 # 📊 Eventos 2026
 
-> Dashboard interativo para análise de dados sobre eventos que ocorrerão'
+Dashboard interativo para análise de dados sobre eventos que ocorrerão'
 
 ## 🎯 Sobre o Projeto
 
